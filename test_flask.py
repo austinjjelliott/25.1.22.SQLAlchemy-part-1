@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User
+from models import db, User, Post
 
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
@@ -56,7 +56,7 @@ class UserViewsTestCase(TestCase):
 
     def test_show_user(self):
         with app.test_client() as client:
-            resp = client.get(f"/{self.user_id}")
+            resp = client.get(f"/users/{self.user_id}")
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
@@ -70,3 +70,49 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Test2", html)
+
+class PostTestCase(TestCase):
+    """Tests for views for Users."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up the database and application context for the entire test class."""
+        with app.app_context():
+            db.create_all()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up the database and remove the application context after all tests in the class have run."""
+        with app.app_context():
+            db.session.remove()
+            db.drop_all()
+
+    def setUp(self):
+        """Add sample Post."""
+        with app.app_context():
+            User.query.delete()
+            Post.query.delete()
+
+            user = User(first_name="Test", last_name="One")
+            post = Post(title="Test Title", content="this is test content")
+            db.session.add(user)
+            db.session.commit()
+            db.session.add(post)
+            db.session.commit()
+
+            self.user_id = user.id
+            self.post_id = post.id
+
+    def tearDown(self):
+        """Clean up any fouled transaction."""
+        with app.app_context():
+            db.session.rollback()
+
+
+    def test_show_post(self):
+        with app.test_client() as client:
+            resp = client.get(f'/users/{self.user_id}/posts/{self.post_id}')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Test Title', html)

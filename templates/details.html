@@ -12,6 +12,20 @@
 </form>
 <a href="{{ url_for ('edit_user_form', user_id = user.id) }}">Edit User</a>
 <br />
+<hr />
+<h3>Posts:</h3>
+<a href="{{ url_for('make_a_post_form', user_id=user.id) }}">Add New Post</a>
+
+{% for post in posts%}
+<ul>
+  <li>
+    <a href="{{ url_for ('show_post', user_id = user.id, post_id = post.id )}}">
+      {{ post.title }}
+    </a>
+  </li>
+</ul>
+{% endfor %}
+
 <a href="/">Go Back</a>
 
 {% endblock %}

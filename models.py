@@ -1,5 +1,6 @@
 """Models for Blogly."""
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
+from sqlalchemy.sql import func 
 
 db = SQLAlchemy()
 
@@ -18,11 +19,6 @@ class User(db.Model):
   def greet(self):
     return f'Hi! I am {self.first_name} {self.last_name}'
 
-
-
-
-
-
   id = db.Column(db.Integer,
                  primary_key = True,
                  autoincrement = True)
@@ -33,5 +29,29 @@ class User(db.Model):
   image_url = db.Column(db.String, 
                         nullable = True,
                         default = 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg')
+
+  posts = db.relationship('Post', backref='user', cascade='all, delete-orphan')
+
+
+class Post(db.Model):
+  """Posts that users can make. One to Many relationship"""
+  __tablename__ = "posts"
+
+
+
+  id = db.Column(db.Integer,
+                 primary_key = True,
+                 autoincrement = True)
+  title = db.Column(db.String(25),
+                    nullable = False)
+  content = db.Column(db.String,
+                      nullable = False)
+  created_at = db.Column(db.DateTime, 
+                           default=func.now(), 
+                           nullable=True)  
+  user_id = db.Column(db.Integer, 
+                      db.ForeignKey('users.id'))
+
+
 
 
