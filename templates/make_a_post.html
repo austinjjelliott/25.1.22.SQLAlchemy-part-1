@@ -3,10 +3,20 @@ content %}
 <h1>Make a Post from User: {{ user.first_name }} {{user.last_name }}</h1>
 
 <form action="/users/{{user.id}}/posts/new" method="POST">
-  <lable for="title">TITLE</lable>
-  <input type="text" name="title" placeholder="title" required />
-  <label for="content">CONTENT</label>
+  <lable for="title">TITLE</lable><br />
+  <input type="text" name="title" placeholder="title" required /><br />
+  <label for="content">CONTENT</label><br />
   <textarea name="content" placeholder="content" required></textarea>
+  <br />
+  {% for tag in tags %}
+  <input
+    type="checkbox"
+    name="tags[]"
+    value="{{ tag.id }}"
+    id="tag-{{ tag.id}}"
+  />
+  <label for="tag-{{tag.id}}"> {{ tag.name }} </label><br />
+  {% endfor %}
   <button type="submit">Submit Post</button>
 </form>
 <a href="/">Go Back</a>

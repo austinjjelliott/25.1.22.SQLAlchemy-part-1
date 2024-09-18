@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block title %} All Users {% endblock %} {% block
+content %}
+<h2>All Tags</h2>
+<ul>
+  {% for tag in tags %}
+  <li>
+    <a href="/tags/{{tag.id}}">{{ tag.name }} </a>
+  </li>
+  {% endfor %}
+</ul>
+<h2>Add another Tag</h2>
+<form action="/tags" method="POST">
+  <input type="text" name="name" placeholder="What is your tag called?" />
+  <button>Create Tag</button>
+</form>
+<hr />
+<a href="/">Go Back</a>
+
+{% endblock %}

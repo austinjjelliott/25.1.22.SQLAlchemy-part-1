@@ -52,6 +52,41 @@ class Post(db.Model):
   user_id = db.Column(db.Integer, 
                       db.ForeignKey('users.id'))
 
+# 25.3 Additions....
+#Relation to middle table 
+  post_tags = db.relationship('PostTag', backref = 'post', cascade = 'all, delete-orphan')
+  #relation to Tags (Many to Many)
+  tags = db.relationship('Tag', secondary = 'posts_tags', backref = 'posts')
 
+
+
+class Tag(db.Model):
+  """add a TAG to your post. """
+  __tablename__ = 'tags'
+
+
+  id = db.Column(db.Integer, 
+                 primary_key = True,
+                 autoincrement = True)
+  name = db.Column(db.Text, 
+                   nullable = False,
+                   unique = True)
+  
+  #Relation to middle table 
+  tag_posts = db.relationship('PostTag', backref = 'tags', cascade = "all, delete-orphan")
+
+class PostTag(db.Model):
+  """Middle table combining the posts and the tags """
+
+  __tablename__ = 'posts_tags'
+
+  post_id = db.Column(db.Integer,
+                      db.ForeignKey('posts.id'),
+                      primary_key = True,
+                      nullable = False)
+  tag_id = db.Column(db.Integer, 
+                     db.ForeignKey('tags.id'),
+                     primary_key = True,
+                     nullable = False)
 
 

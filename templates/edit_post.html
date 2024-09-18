@@ -14,11 +14,35 @@ block content %}
   <input
     type="text"
     name="title"
-    placeholder="title"
+    placeholder="{{ post.title}}"
     value="{{ post.title }}"
   />
   <label for="content">CONTENT</label>
-  <textarea name="content" value="{{ post.content }} "></textarea>
+  <textarea
+    name="content"
+    value="{{ post.content }} "
+    placeholder="{{ post.content }}"
+  ></textarea>
+  <br />
+  {% for tag in tags %} {% if tag in tagged_tags %}
+  <input
+    type="checkbox"
+    name="tags[]"
+    value="{{ tag.id }}"
+    id="tag-{{ tag.id}}"
+    checked
+  />
+  <label for="tag-{{tag.id}}"> {{ tag.name }} </label><br />
+  {% else %}
+  <input
+    type="checkbox"
+    name="tags[]"
+    value="{{ tag.id }}"
+    id="tag-{{ tag.id}}"
+  />
+  <label for="tag-{{tag.id}}"> {{ tag.name }} </label><br />
+  {% endif %} {% endfor %}
+
   <button type="submit">Submit Edits</button>
 </form>
 <a href="/">Go Back</a>
